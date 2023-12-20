@@ -18,7 +18,7 @@ export class UserRepository {
         });
     }
 
-    async isExistEmail(email: string) {
+    async findUserByEmail(email: string) {
         return this.userRepository.findOne({
             where: {
                 email,

@@ -5,10 +5,17 @@ import { AuthModule } from './auth/auth.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { appdataSource } from './ormconfig';
 import { UserModule } from './user/user.module';
-import { BcryptModule } from './common/bcrypt/bcrypt.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
-    imports: [AuthModule, TypeOrmModule.forRoot(appdataSource), UserModule],
+    imports: [
+        AuthModule,
+        TypeOrmModule.forRoot(appdataSource),
+        UserModule,
+        ConfigModule.forRoot({
+            isGlobal: true,
+        }),
+    ],
     controllers: [AppController],
     providers: [AppService],
 })

@@ -33,8 +33,18 @@ export class UserService {
         return user;
     }
 
+    async findUserByEmail(email: string) {
+        const result = await this.userRepository.findUserByEmail(email);
+
+        if (!result) {
+            return false;
+        }
+
+        return result;
+    }
+
     async isExistEmail(email: string) {
-        const result = this.userRepository.isExistEmail(email);
+        const result = await this.userRepository.findUserByEmail(email);
 
         if (!result) {
             throw new BadRequestException('이미 존재하는 이메일임미다');

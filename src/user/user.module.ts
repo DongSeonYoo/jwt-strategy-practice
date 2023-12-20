@@ -8,6 +8,7 @@ import { UserRepository } from './user.repository';
 
 @Module({
     imports: [TypeOrmModule.forFeature([User]), BcryptModule],
+    exports: [UserService],
     providers: [UserService, UserRepository],
     controllers: [UserController],
 })
