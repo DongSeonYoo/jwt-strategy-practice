@@ -1,11 +1,12 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
-import { LoginDto } from './login.dto';
+import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
+import { LoginDto } from './dto/login.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/entities/user.entity';
 import { UserService } from 'src/user/user.service';
 import { BcryptService } from 'src/common/bcrypt/bcrypt.service';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
+import { RefreshTokenDto } from './dto/refresh-token.dto';
 
 @Injectable()
 export class AuthService {
@@ -15,6 +16,26 @@ export class AuthService {
         private readonly jwtService: JwtService,
         private readonly configService: ConfigService,
     ) {}
+
+    async refresh(refreshTokenDto: RefreshTokenDto) {
+        const { refresh_token } = refreshTokenDto;
+
+        const decodedRefreshToken: Payload = this.jwtService.verify(refresh_token, {
+            secret: this.configService.get<string>('JWT_REFRESH_TOKEN_SECRET'),
+        });
+
+        const userId = decodedRefreshToken.id;
+        const user = await this.userService.getUserIfRefreshTokenMatches(
+            refresh_token,
+            userId,
+        );
+        if (!user) {
+            throw new UnauthorizedException('user가 없음미다');
+        }
+
+        const accessToken = await this.generateAccessToken(user);
+        return accessToken;
+    }
 
     async validateUser(loginDto: LoginDto) {
         const { email, password } = loginDto;

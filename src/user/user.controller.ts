@@ -1,6 +1,16 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import {
+    Body,
+    Controller,
+    Get,
+    Param,
+    ParseIntPipe,
+    Post,
+    UseGuards,
+} from '@nestjs/common';
 import { UserService } from './user.service';
 import { SignupDto } from './signup.dto';
+import { JwtAuthGurad } from 'src/auth/guard/jwt.guard';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('user')
 export class UserController {
@@ -11,5 +21,12 @@ export class UserController {
         await this.userService.signup(signupDto);
 
         return null;
+    }
+
+    @Get(':userIdx')
+    // @UseGuards(JwtAuthGurad)
+    @UseGuards(AuthGuard('jwt'))
+    getUserProfileByIdx(@Param('userIdx', new ParseIntPipe()) userIdx: number) {
+        return this.userService.getUserProfileByIdx(userIdx);
     }
 }

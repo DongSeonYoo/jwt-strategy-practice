@@ -34,4 +34,16 @@ export class UserRepository {
             .values(user)
             .execute();
     }
+
+    /**
+     * @param userId 유저 아이디
+     * @param refreshToken 리프레시 토큰
+     * @param tokenExp 리프레시 토큰 만료일
+     */
+    async updateRefreshToken(userId: number, refreshToken: string, tokenExp: Date) {
+        return this.userRepository.update(userId, {
+            currentHashedRefreshToken: refreshToken,
+            currentRefreshTokenExp: tokenExp,
+        });
+    }
 }
