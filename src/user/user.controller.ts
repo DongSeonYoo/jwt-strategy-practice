@@ -5,12 +5,15 @@ import {
     Param,
     ParseIntPipe,
     Post,
+    Req,
     UseGuards,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { SignupDto } from './signup.dto';
-import { JwtAuthGurad } from 'src/auth/guard/jwt.guard';
-import { AuthGuard } from '@nestjs/passport';
+import { JwtAuthGuard } from 'src/auth/guard/jwt.guard';
+import { request } from 'express';
+import { User } from 'src/entities/user.entity';
+import { UserDecorator } from 'src/auth/decorator/user.decorator';
 
 @Controller('user')
 export class UserController {
@@ -23,10 +26,10 @@ export class UserController {
         return null;
     }
 
-    @Get(':userIdx')
-    // @UseGuards(JwtAuthGurad)
-    @UseGuards(AuthGuard('jwt'))
-    getUserProfileByIdx(@Param('userIdx', new ParseIntPipe()) userIdx: number) {
-        return this.userService.getUserProfileByIdx(userIdx);
+    // 본인 프로필 조회
+    @Get()
+    @UseGuards(JwtAuthGuard)
+    getUserProfileByIdx(@UserDecorator() user: User) {
+        return this.userService.getUserProfileByIdx(user.id);
     }
 }

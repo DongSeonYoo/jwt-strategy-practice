@@ -24,6 +24,7 @@ import { UserRepository } from 'src/user/user.repository';
             inject: [ConfigService],
         }),
         forwardRef(() => UserModule),
+        UserModule,
     ],
     controllers: [AuthController],
     providers: [AuthService, UserService, BcryptService, UserRepository, ConfigService],

@@ -6,12 +6,13 @@ import { User } from 'src/entities/user.entity';
 import { BcryptModule } from 'src/common/bcrypt/bcrypt.module';
 import { UserRepository } from './user.repository';
 import { JwtModule } from '@nestjs/jwt';
-import { JwtAuthGurad } from 'src/auth/guard/jwt.guard';
+import { JwtAuthGuard } from 'src/auth/guard/jwt.guard';
+import { JwtAuthStrategy } from 'src/auth/strategy/jwt-strategy';
 
 @Module({
     imports: [TypeOrmModule.forFeature([User]), BcryptModule, JwtModule],
     exports: [UserService],
-    providers: [UserService, UserRepository, JwtAuthGurad],
+    providers: [UserService, UserRepository, JwtAuthGuard, JwtAuthStrategy],
     controllers: [UserController],
 })
 export class UserModule {}
